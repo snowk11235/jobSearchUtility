@@ -1,0 +1,4 @@
+requests
+pathlib
+pytest
+PyQt5
