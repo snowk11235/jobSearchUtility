@@ -80,3 +80,40 @@ def pull_partial_stackoverflow_data(stackoverflow_url) -> List[Dict]:
         data.append(item_data)
 
     return data
+
+
+def pull_github_data(url) -> List[Dict]:
+    print("Github:\n-------")
+
+    # Create list to add to with every successful page request.
+    data = []
+
+    for i in range(1, 6):
+        try:
+            print("Fetching page %s..." % (str(i)))
+            new_data = requests.get(url + "page=" + str(i)).json()
+            # print_status_code(response)
+            data.extend(new_data)
+        except Exception:
+            print("Something went wrong while getting page %s of your data!\nContinuing without it..." % str(i))
+
+    # last minute data massaging
+    for job in data:
+        if "category" not in job.keys():
+            job["category"] = "None"
+
+    return data
+
+
+def write_to_file(data: json):
+    # Open and write
+    print("Writing to file.")
+    jobs_file = open(path, 'w')
+    for job in data:
+        # Must be String type to write to file
+        # jobs_file.write(summarizedata(job))  # write job summary to file
+        jobs_file.write(json.dumps(job) + "\n")  # write job's full json string
+
+    # Close
+    jobs_file.close()
+    print("Done.")

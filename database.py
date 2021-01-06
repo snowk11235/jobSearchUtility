@@ -2,13 +2,11 @@
 File to handle database functionality
 ----------------------
 Author:K.*
-re-worked 12/21/20
+
 """
 import sqlite3
 from typing import Tuple, Dict, List
 import utilities as util
-
-
 
 
 
@@ -63,7 +61,7 @@ def create_indeed_table(cursor: sqlite3.Cursor):
 
 
 def create_stackovfl_table(cursor: sqlite3.Cursor):
-    cursor.execute('''CREATE TABLE IF NOT EXISTS main.indeed_jobs(
+    cursor.execute('''CREATE TABLE IF NOT EXISTS main.stackovfl_jobs(
         id INTEGER PRIMARY KEY,
         title TEXT,
         company TEXT,
@@ -110,6 +108,23 @@ def insert_into_github_table(cursor: sqlite3.Cursor, data: List[Dict]):
 
         cursor.execute('''INSERT INTO github_jobs (job_type, title, company, description, location)
                           VALUES(?, ?, ?, ?, ?)''', (job_type, title, company, desc, location))
+
+
+def insert_into_stackovfl_table(cursor: sqlite3.Cursor, data: List[Dict]):
+    print("inserting results into database.")
+    # Clear Previous Entries
+    cursor.execute('''DELETE FROM stackovfl_jobs''')
+
+    # Re-populate with fresh data
+    for job in data:
+        #job_type = job["type"]
+        title = job["title"]
+        company = job["company"]
+        desc = job["description"]
+        location = job["location"]
+
+        cursor.execute('''INSERT INTO stackovfl_jobs (title, company, description, location)
+                              VALUES(?, ?, ?, ?)''', (title, company, desc, location))
 
 
 def insert_into_indeed_table(cursor: sqlite3.Cursor, data: List[Dict]):
